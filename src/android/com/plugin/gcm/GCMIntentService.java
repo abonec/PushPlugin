@@ -143,7 +143,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			try {
 				file = getAssets().openFd("www/sounds/"+soundName+".mp3");
 				player.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
-				defaults = Notification.DEFAULT_LIGHTS & Notification.DEFAULT_VIBRATE;
+				defaults = Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE;
 				mBuilder.setDefaults(defaults);
 				player.prepare();
 				player.start();
