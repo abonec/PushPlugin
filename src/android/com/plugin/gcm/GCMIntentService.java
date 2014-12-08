@@ -1,5 +1,7 @@
 package com.plugin.gcm;
 
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,6 +16,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gcm.GCMBaseIntentService;
+
+import java.io.IOException;
 
 @SuppressLint("NewApi")
 public class GCMIntentService extends GCMBaseIntentService {
@@ -130,6 +134,21 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 		catch(Exception e) {
 			Log.e(TAG, "Number format exception - Error parsing Notification ID" + e.getMessage());
+		}
+		
+		String soundName = extras.getString("sound");
+		if (soundName != null) {
+			MediaPlayer player = new MediaPlayer();
+			AssetFileDescriptor file;
+			try {
+				file = getAssets().openFd("www/sounds/"+soundName+".mp3");
+				player.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
+				defaults = Notification.DEFAULT_LIGHTS & Notification.DEFAULT_VIBRATE;
+				mBuilder.setDefaults(defaults);
+				player.prepare();
+				player.start();
+			} catch (IOException e) {
+			}
 		}
 		
 		mNotificationManager.notify((String) appName, notId, mBuilder.build());
